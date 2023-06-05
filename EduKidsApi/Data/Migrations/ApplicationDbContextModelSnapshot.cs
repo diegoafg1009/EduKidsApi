@@ -41,7 +41,35 @@ namespace EduKidsApi.Data.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("Alternative");
+                    b.ToTable("Alternatives");
+                });
+
+            modelBuilder.Entity("EduKidsApi.Models.Difficult", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Difficults");
+                });
+
+            modelBuilder.Entity("EduKidsApi.Models.Matter", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Matters");
                 });
 
             modelBuilder.Entity("EduKidsApi.Models.Question", b =>
@@ -58,7 +86,7 @@ namespace EduKidsApi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Question");
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("EduKidsApi.Models.Response", b =>
@@ -80,7 +108,7 @@ namespace EduKidsApi.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Response");
+                    b.ToTable("Responses");
                 });
 
             modelBuilder.Entity("EduKidsApi.Models.ResponseDetail", b =>
@@ -111,7 +139,31 @@ namespace EduKidsApi.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ResponseDetail");
+                    b.ToTable("ResponseDetails");
+                });
+
+            modelBuilder.Entity("EduKidsApi.Models.Topic", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("DifficultId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("MatterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DifficultId");
+
+                    b.HasIndex("MatterId");
+
+                    b.ToTable("Topics");
                 });
 
             modelBuilder.Entity("EduKidsApi.Models.User", b =>
@@ -377,6 +429,25 @@ namespace EduKidsApi.Data.Migrations
                     b.Navigation("Response");
                 });
 
+            modelBuilder.Entity("EduKidsApi.Models.Topic", b =>
+                {
+                    b.HasOne("EduKidsApi.Models.Difficult", "Difficult")
+                        .WithMany("Topics")
+                        .HasForeignKey("DifficultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EduKidsApi.Models.Matter", "Matter")
+                        .WithMany("Topics")
+                        .HasForeignKey("MatterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Difficult");
+
+                    b.Navigation("Matter");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", null)
@@ -431,6 +502,16 @@ namespace EduKidsApi.Data.Migrations
             modelBuilder.Entity("EduKidsApi.Models.Alternative", b =>
                 {
                     b.Navigation("ResponseDetails");
+                });
+
+            modelBuilder.Entity("EduKidsApi.Models.Difficult", b =>
+                {
+                    b.Navigation("Topics");
+                });
+
+            modelBuilder.Entity("EduKidsApi.Models.Matter", b =>
+                {
+                    b.Navigation("Topics");
                 });
 
             modelBuilder.Entity("EduKidsApi.Models.Question", b =>

@@ -7,11 +7,13 @@ namespace EduKidsApi.Data
     {
         private readonly ApplicationDbContext _context;
         public IMatterRepository Matters { get; private set; }
+        public ITopicRepository Topics { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Matters = new MatterRepository(_context);
+            Topics = new TopicRepository(_context);
         }
 
         public async Task CommitAsync()

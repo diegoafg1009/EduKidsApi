@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EduKidsApi.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -26,7 +26,31 @@ namespace EduKidsApi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Question",
+                name: "Difficults",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Difficults", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Matters",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Matters", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -35,7 +59,7 @@ namespace EduKidsApi.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Question", x => x.Id);
+                    table.PrimaryKey("PK_Questions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,7 +123,33 @@ namespace EduKidsApi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Alternative",
+                name: "Topics",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DifficultId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MatterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Topics", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Topics_Difficults_DifficultId",
+                        column: x => x.DifficultId,
+                        principalTable: "Difficults",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Topics_Matters_MatterId",
+                        column: x => x.MatterId,
+                        principalTable: "Matters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Alternatives",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -109,17 +159,17 @@ namespace EduKidsApi.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Alternative", x => x.Id);
+                    table.PrimaryKey("PK_Alternatives", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Alternative_Question_QuestionId",
+                        name: "FK_Alternatives_Questions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "Question",
+                        principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Response",
+                name: "Responses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -129,9 +179,9 @@ namespace EduKidsApi.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Response", x => x.Id);
+                    table.PrimaryKey("PK_Responses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Response_Users_UserId",
+                        name: "FK_Responses_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -224,7 +274,7 @@ namespace EduKidsApi.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ResponseDetail",
+                name: "ResponseDetails",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -235,32 +285,32 @@ namespace EduKidsApi.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ResponseDetail", x => x.Id);
+                    table.PrimaryKey("PK_ResponseDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ResponseDetail_Alternative_AlternativeId",
+                        name: "FK_ResponseDetails_Alternatives_AlternativeId",
                         column: x => x.AlternativeId,
-                        principalTable: "Alternative",
+                        principalTable: "Alternatives",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ResponseDetail_Question_QuestionId",
+                        name: "FK_ResponseDetails_Questions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "Question",
+                        principalTable: "Questions",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ResponseDetail_Response_ResponseId",
+                        name: "FK_ResponseDetails_Responses_ResponseId",
                         column: x => x.ResponseId,
-                        principalTable: "Response",
+                        principalTable: "Responses",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ResponseDetail_Users_UserId",
+                        name: "FK_ResponseDetails_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Alternative_QuestionId",
-                table: "Alternative",
+                name: "IX_Alternatives_QuestionId",
+                table: "Alternatives",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
@@ -271,34 +321,44 @@ namespace EduKidsApi.Data.Migrations
                 filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Response_UserId",
-                table: "Response",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ResponseDetail_AlternativeId",
-                table: "ResponseDetail",
+                name: "IX_ResponseDetails_AlternativeId",
+                table: "ResponseDetails",
                 column: "AlternativeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResponseDetail_QuestionId",
-                table: "ResponseDetail",
+                name: "IX_ResponseDetails_QuestionId",
+                table: "ResponseDetails",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResponseDetail_ResponseId",
-                table: "ResponseDetail",
+                name: "IX_ResponseDetails_ResponseId",
+                table: "ResponseDetails",
                 column: "ResponseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ResponseDetail_UserId",
-                table: "ResponseDetail",
+                name: "IX_ResponseDetails_UserId",
+                table: "ResponseDetails",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Responses_UserId",
+                table: "Responses",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
                 table: "RoleClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Topics_DifficultId",
+                table: "Topics",
+                column: "DifficultId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Topics_MatterId",
+                table: "Topics",
+                column: "MatterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
@@ -332,13 +392,16 @@ namespace EduKidsApi.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ResponseDetail");
+                name: "ResponseDetails");
 
             migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Topics");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -353,16 +416,22 @@ namespace EduKidsApi.Data.Migrations
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
-                name: "Alternative");
+                name: "Alternatives");
 
             migrationBuilder.DropTable(
-                name: "Response");
+                name: "Responses");
+
+            migrationBuilder.DropTable(
+                name: "Difficults");
+
+            migrationBuilder.DropTable(
+                name: "Matters");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Question");
+                name: "Questions");
 
             migrationBuilder.DropTable(
                 name: "Users");
