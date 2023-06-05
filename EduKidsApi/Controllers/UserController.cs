@@ -39,7 +39,6 @@ namespace EduKidsApi.Controllers
 
             if (result.Succeeded)
             {
-                await _signInManager.SignInAsync(user, false);
                 return Ok(await BuildToken(userDto));
             }
 
@@ -51,7 +50,6 @@ namespace EduKidsApi.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult<string>> Login([FromBody] UserDto model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
 
             var login = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
 
