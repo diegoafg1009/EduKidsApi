@@ -8,5 +8,6 @@
         public Difficult? Difficult { get; set; }
         public Guid MatterId { get; set; }
         public Matter? Matter { get; set; }
+        public List<Question> Questions { get; set; } = new List<Question>();
     }
 }
