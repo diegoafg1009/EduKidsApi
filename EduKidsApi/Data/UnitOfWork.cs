@@ -1,5 +1,5 @@
-﻿//using EduKidsApi.Core;
-//using EduKidsApi.Core.Repositories;
+﻿using EduKidsApi.Core;
+using EduKidsApi.Core.Repositories;
 
 namespace EduKidsApi.Data
 {
@@ -9,20 +9,20 @@ namespace EduKidsApi.Data
         public IMatterRepository Matters { get; }
         public ITopicRepository Topics { get; }
         public IResponseRepository Responses { get; }
-        
 
-//        public UnitOfWork(ApplicationDbContext context)
-//        {
-//            _context = context;
-//            Matters = new MatterRepository(_context);
-//            Topics = new TopicRepository(_context);
-//            Responses = new ResponseRepository(_context);
-//        }
 
-//        public async Task CommitAsync()
-//        {
-//            await _context.SaveChangesAsync();
-//        }
+        public UnitOfWork(ApplicationDbContext context)
+        {
+            _context = context;
+            Matters = new MatterRepository(_context);
+            Topics = new TopicRepository(_context);
+            Responses = new ResponseRepository(_context);
+        }
+
+        public async Task CommitAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
 
         private bool _disposed;
 

@@ -9,6 +9,13 @@ namespace EduKidsApi.Data
 {
     public class ApplicationDbContext: IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
+        public DbSet<Alternative> Alternatives { get; set; }
+        public DbSet<Question> Questions { get; set; }
+        public DbSet<Response> Responses { get; set; }
+        public DbSet<ResponseDetail> ResponseDetails { get; set; }
+        public DbSet<Topic> Topics { get; set; }
+        public DbSet<Difficult> Difficulties { get; set; }
+        public DbSet<Matter> Matters { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
