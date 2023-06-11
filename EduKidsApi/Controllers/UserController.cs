@@ -7,84 +7,81 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace EduKidsApi.Controllers
+namespace EduKidsApi.Controllers;
+
+[Route("api/Users")]
+[ApiController]
+public class UserController : ControllerBase
 {
-    [Route("api/Users")]
-    [ApiController]
-    public class UserController : ControllerBase
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+    private readonly IConfiguration _configuration;
+
+    public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly IConfiguration _configuration;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _configuration = configuration;
+    }
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+    // POST: api/Users/Register
+
+    [HttpPost("Register")]
+    public async Task<IActionResult> Register(UserDto userDto)
+    {
+        var user = new User
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _configuration = configuration;
+            UserName = userDto.Email,
+            Email = userDto.Email
+        };
+
+        var result = await _userManager.CreateAsync(user, userDto.Password);
+
+        if (result.Succeeded)
+        {
+            return Ok(await BuildToken(userDto));
         }
 
-        // POST: api/Users/Register
+        return BadRequest(result.Errors);
+    }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> Register(UserDto userDto)
+    // POST: api/Users/Login
+
+    [HttpPost("Login")]
+    public async Task<ActionResult<string>> Login([FromBody] UserDto model)
+    {
+
+        var login = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+
+        if (login.Succeeded)
         {
-            var user = new User
-            {
-                UserName = userDto.Email,
-                Email = userDto.Email
-            };
-
-            var result = await _userManager.CreateAsync(user, userDto.Password);
-
-            if (result.Succeeded)
-            {
-                return Ok(await BuildToken(userDto));
-            }
-
-            return BadRequest(result.Errors);
+            return await BuildToken(model);
         }
-
-        // POST: api/Users/Login
-
-        [HttpPost("Login")]
-        public async Task<ActionResult<string>> Login([FromBody] UserDto model)
-        {
-
-            var login = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
-
-            if (login.Succeeded)
-            {
-                return await BuildToken(model);
-            }
-            else
-            {
-                return BadRequest("Usuario y/o contraseña incorrecto");
-            }
-        }
-
-        private async Task<string> BuildToken(UserDto userDto)
-        {
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name, userDto.Email),
-            };
-
-            var user = await _userManager.FindByEmailAsync(userDto.Email);
-
-            claims.Add(new Claim("Id", user.Id.ToString()));
             
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwtkey"]!));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        return BadRequest("Usuario y/o contraseña incorrecto");
+    }
 
-            var token = new JwtSecurityToken(
-                issuer: null,
-                audience: null,
-                claims: claims,
-                signingCredentials: credentials
-                );
+    private async Task<string> BuildToken(UserDto userDto)
+    {
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.Name, userDto.Email!)
+        };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        var user = await _userManager.FindByEmailAsync(userDto.Email);
+
+        claims.Add(new Claim("Id", user.Id.ToString()));
+            
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwtkey"]!));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: null,
+            audience: null,
+            claims: claims,
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

@@ -1,14 +1,14 @@
 ﻿//using EduKidsApi.Core;
 //using EduKidsApi.Core.Repositories;
 
-//namespace EduKidsApi.Data
-//{
-//    public class UnitOfWork : IUnitOfWork, IDisposable
-//    {
-//        private readonly ApplicationDbContext _context;
-//        public IMatterRepository Matters { get; private set; }
-//        public ITopicRepository Topics { get; private set; }
-//        public IResponseRepository Responses { get; private set; }
+namespace EduKidsApi.Data
+{
+    public class UnitOfWork : IUnitOfWork
+    {
+        private readonly ApplicationDbContext _context;
+        public IMatterRepository Matters { get; }
+        public ITopicRepository Topics { get; }
+        public IResponseRepository Responses { get; }
         
 
 //        public UnitOfWork(ApplicationDbContext context)
@@ -24,9 +24,24 @@
 //            await _context.SaveChangesAsync();
 //        }
 
-//        public void Dispose()
-//        {
-//            _context.Dispose();
-//        }
-//    }
-//}
+        private bool _disposed;
+
+        private void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            _disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+}

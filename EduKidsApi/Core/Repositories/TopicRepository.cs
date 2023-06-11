@@ -13,7 +13,7 @@ namespace EduKidsApi.Core.Repositories
 
         public async Task<IEnumerable<TopicDto>> GetByMatterIdAsync(Guid matterId)
         {
-            return await _context.Topics
+            return await Context.Topics
                 .Where(t => t.MatterId == matterId)
                 .Select(x => new TopicDto
                 {

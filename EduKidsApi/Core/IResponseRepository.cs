@@ -1,8 +1,7 @@
 ﻿using EduKidsApi.Models;
 
-namespace EduKidsApi.Core
+namespace EduKidsApi.Core;
+
+public interface IResponseRepository: IGenericRepository<Response>
 {
-    public interface IResponseRepository: IGenericRepository<Response>
-    {
-    }
 }

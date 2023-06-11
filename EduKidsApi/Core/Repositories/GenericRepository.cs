@@ -5,45 +5,45 @@ namespace EduKidsApi.Core.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly ApplicationDbContext _context;
-        internal DbSet<T> _dbSet;
+        protected readonly ApplicationDbContext Context;
+        internal DbSet<T> DbSet;
 
-        public GenericRepository(ApplicationDbContext context)
+        protected GenericRepository(ApplicationDbContext context)
         {
-            _context = context;
-            _dbSet = _context.Set<T>();
+            Context = context;
+            DbSet = Context.Set<T>();
         }
         
         public virtual async Task<T?> CreateAsync(T entity)
         {
-            await _dbSet.AddAsync(entity);
+            await DbSet.AddAsync(entity);
             return entity;
         }
 
         public virtual async Task<bool> DeleteAsync(Guid id)
         {
-            var entity = await _dbSet.FindAsync(id);
+            var entity = await DbSet.FindAsync(id);
             if (entity == null)
             {
                 return false;
             }
-            _dbSet.Remove(entity);
+            DbSet.Remove(entity);
             return true;
         }
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await DbSet.ToListAsync();
         }
 
         public virtual async Task<T?> GetByIdAsync(Guid id)
         {
-            return await _dbSet.FindAsync(id);
+            return await DbSet.FindAsync(id);
         }
 
         public virtual async Task<T?> UpdateAsync(T entity)
         {
-            _dbSet.Update(entity);
+            DbSet.Update(entity);
             return entity;
         }
     }
