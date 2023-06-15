@@ -16,8 +16,9 @@ public class TopicController: ControllerBase
 
     // GET: api/Topics/{matterId}
     [HttpGet("{matterId:guid}")]
-    public async Task<ActionResult<List<TopicDto>>> GetTopicsByMatterId(Guid matterId)
+    public async Task<ActionResult<List<TopicDto>>> GetTopicsByMatterId([FromQuery] FilterTopicDto model)
     {
-        return Ok(await _unitOfWork.Topics.GetByMatterIdAsync(matterId));
+        var topics = await _unitOfWork.Topics.GetWithFiltersAsync(model);
+        return Ok(topics);
     }
 }
