@@ -8,5 +8,7 @@ namespace EduKidsApi.Core.Repositories
         public ResponseRepository(ApplicationDbContext context) : base(context)
         {
         }
+
+        
     }
 }

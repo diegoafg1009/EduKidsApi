@@ -1,6 +1,4 @@
-﻿using EduKidsApi.Models;
-
-namespace EduKidsApi.Dtos
+﻿namespace EduKidsApi.Dtos
 {
     public class QuestionDto
     {

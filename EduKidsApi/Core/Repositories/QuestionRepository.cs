@@ -19,6 +19,7 @@ namespace EduKidsApi.Core.Repositories
                 var questions = Context.Questions
                     .Include(x => x.Alternatives)
                     .Where(x => x.TopicId == topicId)
+                    .Take(10)
                     .AsEnumerable()
                 .Select(x => new QuestionDto
                 {

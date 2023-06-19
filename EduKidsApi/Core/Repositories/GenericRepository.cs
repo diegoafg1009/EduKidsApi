@@ -20,6 +20,12 @@ namespace EduKidsApi.Core.Repositories
             return entity;
         }
 
+        public virtual async Task<IEnumerable<T>> CreateRangeAsync(List<T> items)
+        {
+            await DbSet.AddRangeAsync(items);
+            return items;
+        }
+
         public virtual async Task<bool> DeleteAsync(Guid id)
         {
             var entity = await DbSet.FindAsync(id);
