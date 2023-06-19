@@ -43,8 +43,11 @@ namespace EduKidsApi.Core.Repositories
 
         public virtual async Task<T?> UpdateAsync(T entity)
         {
-            DbSet.Update(entity);
-            return entity;
+            return await Task.Run(() =>
+            {
+                DbSet.Update(entity);
+                return entity;
+            });
         }
     }
 }

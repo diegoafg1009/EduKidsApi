@@ -11,18 +11,31 @@ namespace EduKidsApi.Core.Repositories
         {
         }
 
-        public async Task<IEnumerable<TopicDto>> GetByMatterIdAsync(Guid matterId)
+        public async Task<IEnumerable<TopicDto>> GetWithFiltersAsync(FilterTopicDto model)
         {
-            return await Context.Topics
-                .Where(t => t.MatterId == matterId)
+            var topics = await Context.Topics
+                .Include(x => x.Difficult)
+                .Include(x => x.Matter)
+                .ToListAsync();
+
+            if (model.MatterId != Guid.Empty)
+            {
+                topics = topics.Where(x => x.MatterId == model.MatterId).ToList();
+            }
+
+            if (model.DifficultId != Guid.Empty)
+            {
+                topics = topics.Where(x => x.DifficultId == model.DifficultId).ToList();
+            }
+
+            return topics
                 .Select(x => new TopicDto
                 {
                     Id = x.Id,
                     Name = x.Name,
                     Difficult = x.Difficult!.Name,
                     Matter = x.Matter!.Name
-                })
-                .ToListAsync();
+                });
         }
     }
 }

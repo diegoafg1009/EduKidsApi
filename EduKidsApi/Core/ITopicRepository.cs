@@ -5,5 +5,5 @@ namespace EduKidsApi.Core;
 
 public interface ITopicRepository : IGenericRepository<Topic>
 {
-    Task<IEnumerable<TopicDto>> GetByMatterIdAsync(Guid matterId);
+    Task<IEnumerable<TopicDto>> GetWithFiltersAsync(FilterTopicDto models);
 }

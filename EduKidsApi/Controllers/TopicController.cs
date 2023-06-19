@@ -14,10 +14,11 @@ public class TopicController: ControllerBase
         _unitOfWork = unitOfWork;
     }
 
-    // GET: api/Topics/{matterId}
-    [HttpGet("{matterId:guid}")]
-    public async Task<ActionResult<List<TopicDto>>> GetTopicsByMatterId(Guid matterId)
+    // GET: api/Topics/
+    [HttpGet]
+    public async Task<ActionResult<List<TopicDto>>> GetTopicsByMatterId([FromQuery] FilterTopicDto model)
     {
-        return Ok(await _unitOfWork.Topics.GetByMatterIdAsync(matterId));
+        var topics = await _unitOfWork.Topics.GetWithFiltersAsync(model);
+        return Ok(topics);
     }
 }
