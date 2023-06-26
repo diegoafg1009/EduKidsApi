@@ -11,6 +11,8 @@ namespace EduKidsApi.Data
         public IResponseRepository Responses { get; }
         public IQuestionRepository Questions { get; }
 
+        public IResponseDetailRepository ResponseDetails { get; }
+
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
@@ -18,6 +20,7 @@ namespace EduKidsApi.Data
             Topics = new TopicRepository(_context);
             Responses = new ResponseRepository(_context);
             Questions = new QuestionRepository(_context);
+            ResponseDetails = new ResponseDetailRepository(_context);
         }
 
         public async Task CommitAsync()

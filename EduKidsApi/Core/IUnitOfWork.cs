@@ -6,6 +6,7 @@
         ITopicRepository Topics { get; }
         IResponseRepository Responses { get; }
         IQuestionRepository Questions { get; }
+        IResponseDetailRepository ResponseDetails { get; }
         Task CommitAsync();
 
     }
